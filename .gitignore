@@ -1,0 +1,9 @@
+/.metadata/
+node_modules/
+build/
+.settings/
+Servers/
+.classpath
+.project
+.scannerwork/
+node_modules
