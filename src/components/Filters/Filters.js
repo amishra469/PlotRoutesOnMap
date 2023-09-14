@@ -3,11 +3,12 @@ import sourceIcon from "../../assets/Source.png"
 import destinationIcon from "../../assets/Destination.png"
 import "./Filters.css"
 
-const Filters = () => {
-    const [source, setSource] = useState([])
-    const [destination, setDestination] = useState([])
+const Filters = (props) => {
+    const [source, setSource] = useState("")
+    const [destination, setDestination] = useState("")
     const [isSource, setIsSource] = useState(false)
     const [isDestination, setIsDestination] = useState(false)
+
     return (
         <div>
             <div>
@@ -19,7 +20,7 @@ const Filters = () => {
                         value={source}
                         onChange={(e) => setSource(e.target.value)}
                     />
-                    <span onClick={() => setIsSource(true)}>
+                    <span onClick={() => {setIsSource(true); props.setSrc(source)}}>
                         <img className={!isSource ? 'eta-map-marker' : 'eta-map-marker eta-source-marker-clicked'}
                             src={sourceIcon} alt='source'></img>
                     </span>
@@ -34,7 +35,7 @@ const Filters = () => {
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
                     />
-                    <span onClick={() => setIsDestination(true)}>
+                    <span onClick={() => {setIsDestination(true); props.setDest(destination)}}>
                         <img className={!isDestination ? 'eta-map-marker' : 'eta-map-marker eta-destination-marker-clicked'}
                             src={destinationIcon} alt='source'></img>
                     </span>
