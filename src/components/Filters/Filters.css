@@ -1,0 +1,30 @@
+.input-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.input-box{
+    height: 25px;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+}
+
+.eta-map-marker {
+    width: 20px;
+    border: 1px solid;
+    height: 20px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .eta-source-marker-clicked{
+    background: #6d5c5c;
+    border: 1px solid #6d5c5c
+  }
+  
+  .eta-destination-marker-clicked{
+    background: #181872;
+    border: 1px solid #181872
+  }
