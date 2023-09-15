@@ -3,7 +3,7 @@ import sourceIcon from "../../assets/Source.png"
 import destinationIcon from "../../assets/Destination.png"
 import "./Filters.css"
 
-const Filters = (props) => {
+const Filters = ({setSrc, setDest, handleRoute}) => {
     const [source, setSource] = useState("")
     const [destination, setDestination] = useState("")
     const [isSource, setIsSource] = useState(false)
@@ -20,7 +20,7 @@ const Filters = (props) => {
                         value={source}
                         onChange={(e) => setSource(e.target.value)}
                     />
-                    <span onClick={() => {setIsSource(true); props.setSrc(source)}}>
+                    <span onClick={() => {setIsSource(true); setSrc(source)}}>
                         <img className={!isSource ? 'eta-map-marker' : 'eta-map-marker eta-source-marker-clicked'}
                             src={sourceIcon} alt='source'></img>
                     </span>
@@ -35,13 +35,13 @@ const Filters = (props) => {
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
                     />
-                    <span onClick={() => {setIsDestination(true); props.setDest(destination)}}>
+                    <span onClick={() => {setIsDestination(true); setDest(destination)}}>
                         <img className={!isDestination ? 'eta-map-marker' : 'eta-map-marker eta-destination-marker-clicked'}
                             src={destinationIcon} alt='source'></img>
                     </span>
                 </div>
             </div>
-            <button type='submit'>Get The Route</button>
+            <button type='submit' onClick={()=> {handleRoute()}}>Get The Route</button>
         </div >
     )
 }

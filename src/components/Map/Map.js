@@ -8,8 +8,10 @@ const L = window.L = window.L ? window.L : {};
 let map = null;
 let sourceMarker = null;
 let destinationMarker = null;
+let routingControl = null;
 
 const Map = () => {
+    console.log(L)
     const [source, setSource] = useState('');
     const [destination, setDestination] = useState('');
     const mapRef = useRef(null);
@@ -38,7 +40,7 @@ const Map = () => {
             iconSize: [25, 30],
         });
 
-        const marker = new L.Marker(coords, { icon: markerIcon, draggable: true });
+        const marker = new L.Marker(coords, { icon: markerIcon, draggable: false });
 
         if (markerType === 'source') {
             if (sourceMarker) map.removeLayer(sourceMarker)
@@ -51,33 +53,46 @@ const Map = () => {
         map.addLayer(marker);
     };
 
-    useEffect(() => {
-        if (source !== '') {
-            const [lat, lng] = source.split(',');
-            plotMarker('source', [lat, lng]);
-        }
-    }, [source]);
-
-    useEffect(() => {
-        if (destination !== '') {
-            const [lat, lng] = destination.split(',');
-            plotMarker('destination', [lat, lng]);
-        }
-    }, [destination]);
-
     const setSrc = (src) => {
         setSource(src);
+        if (src !== '') {
+            const [lat, lng] = src.split(',');
+            plotMarker('source', [lat, lng]);
+        }
     };
 
     const setDest = (dest) => {
         setDestination(dest);
+        if (dest !== '') {
+            const [lat, lng] = dest.split(',');
+            plotMarker('destination', [lat, lng]);
+        }
     };
+
+    const handleRoute = () => {
+        if (source !== '' && destination !== '') {
+            let [sLat, sLng] = source.split(",");
+            let [dLat, dLng] = destination.split(",")
+
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(parseFloat(sLat), parseFloat(sLng)),
+                    L.latLng(parseFloat(dLat), parseFloat(dLng))
+                ],
+                routeWhileDragging: true
+            }).addTo(map);
+        }
+    }
 
     return (
         <div className="map-container">
             <div id="mymap" style={{ width: '100%', height: '650px', position: 'absolute' }}></div>
             <div className="filter-container">
-                <Filters setSrc={setSrc} setDest={setDest} />
+                <Filters setSrc={setSrc} setDest={setDest} handleRoute={handleRoute} />
             </div>
         </div>
     );
