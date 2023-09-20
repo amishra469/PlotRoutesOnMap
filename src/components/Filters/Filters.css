@@ -10,7 +10,7 @@
     border-radius: 5px;
 }
 
-.eta-map-marker {
+.map-marker {
     width: 20px;
     border: 1px solid;
     height: 20px;
@@ -19,12 +19,12 @@
     cursor: pointer;
   }
   
-  .eta-source-marker-clicked{
+  .source-marker-clicked{
     background: #6d5c5c;
     border: 1px solid #6d5c5c
   }
   
-  .eta-destination-marker-clicked{
+  .destination-marker-clicked{
     background: #181872;
     border: 1px solid #181872
   }
