@@ -21,7 +21,7 @@ const Filters = ({setSrc, setDest, handleRoute}) => {
                         onChange={(e) => setSource(e.target.value)}
                     />
                     <span onClick={() => {setIsSource(true); setSrc(source)}}>
-                        <img className={!isSource ? 'eta-map-marker' : 'eta-map-marker eta-source-marker-clicked'}
+                        <img className={!isSource ? 'map-marker' : 'map-marker source-marker-clicked'}
                             src={sourceIcon} alt='source'></img>
                     </span>
                 </div>
@@ -36,7 +36,7 @@ const Filters = ({setSrc, setDest, handleRoute}) => {
                         onChange={(e) => setDestination(e.target.value)}
                     />
                     <span onClick={() => {setIsDestination(true); setDest(destination)}}>
-                        <img className={!isDestination ? 'eta-map-marker' : 'eta-map-marker eta-destination-marker-clicked'}
+                        <img className={!isDestination ? 'map-marker' : 'map-marker destination-marker-clicked'}
                             src={destinationIcon} alt='source'></img>
                     </span>
                 </div>
