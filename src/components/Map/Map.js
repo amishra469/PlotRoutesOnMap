@@ -11,7 +11,6 @@ let destinationMarker = null;
 let routingControl = null;
 
 const Map = () => {
-    console.log(L)
     const [source, setSource] = useState('');
     const [destination, setDestination] = useState('');
     const mapRef = useRef(null);
@@ -32,22 +31,36 @@ const Map = () => {
         }
     };
 
-    const plotMarker = (markerType, coords) => {
-        if (!map || !coords) return;
-
+    const getMarker = (markerType) => {
         const markerIcon = L.icon({
             iconUrl: markerType === 'source' ? sourceIcon : destinationIcon,
             iconSize: [25, 30],
         });
+        return markerIcon
+    }
 
-        const marker = new L.Marker(coords, { icon: markerIcon, draggable: false });
+    const plotMarker = (markerType, coords) => {
+        if (!map || !coords) return;
+
+        const marker = new L.Marker(coords, { icon: getMarker(markerType), draggable: true });
 
         if (markerType === 'source') {
             if (sourceMarker) map.removeLayer(sourceMarker)
             sourceMarker = marker;
-        } else if (markerType === 'destination') {
+            if (routingControl) {
+                const waypoints = routingControl.getWaypoints();
+                waypoints[0].latLng = sourceMarker.getLatLng(); // Update source waypoint
+                routingControl.setWaypoints(waypoints);
+            }
+        }
+        else if (markerType === 'destination') {
             if (destinationMarker) map.removeLayer(destinationMarker)
             destinationMarker = marker;
+            if (routingControl) {
+                const waypoints = routingControl.getWaypoints();
+                waypoints[waypoints.length - 1].latLng = destinationMarker.getLatLng(); // Update destination waypoint
+                routingControl.setWaypoints(waypoints);
+            }
         }
 
         map.addLayer(marker);
@@ -69,11 +82,24 @@ const Map = () => {
         }
     };
 
-    const handleRoute = () => {
-        if (source !== '' && destination !== '') {
-            let [sLat, sLng] = source.split(",");
-            let [dLat, dLng] = destination.split(",")
+    const handleRoute = (src, dest) => {
+        if (src !== '' && dest !== '') {
+            let [sLat, sLng] = src.split(",");
+            let [dLat, dLng] = dest.split(",")
 
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            if (sourceMarker) map.removeLayer(sourceMarker)
+            if (destinationMarker) map.removeLayer(destinationMarker)
+
+            // Create markers with custom icons and make them draggable
+            sourceMarker = L.marker([parseFloat(sLat), parseFloat(sLng)], { icon: getMarker('source'), draggable: true });
+            destinationMarker = L.marker([parseFloat(dLat), parseFloat(dLng)], { icon: getMarker('destination'), draggable: true });
+
+
+            // Create a routing control with the waypoints
             if (routingControl) {
                 map.removeControl(routingControl);
             }
@@ -83,8 +109,32 @@ const Map = () => {
                     L.latLng(parseFloat(sLat), parseFloat(sLng)),
                     L.latLng(parseFloat(dLat), parseFloat(dLng))
                 ],
-                routeWhileDragging: true
+                routeWhileDragging: true,
+                createMarker: function (i, waypoint, n) {
+                    if (i === 0) {
+                        return sourceMarker;
+                    } else if (i === n - 1) {
+                        return destinationMarker;
+                    }
+                }
             }).addTo(map);
+
+            // Listen for marker drag events and update waypoints
+            sourceMarker.on('dragend', function () {
+                const waypoints = routingControl.getWaypoints();
+                waypoints[0].latLng = sourceMarker.getLatLng(); // Update source waypoint
+                let lat = sourceMarker.getLatLng().lat, lng = sourceMarker.getLatLng().lng
+                setSource(lat.toFixed(2) + "," + lng.toFixed(3))
+                routingControl.setWaypoints(waypoints);
+            });
+
+            destinationMarker.on('dragend', function () {
+                const waypoints = routingControl.getWaypoints();
+                waypoints[waypoints.length - 1].latLng = destinationMarker.getLatLng(); // Update destination waypoint
+                let lat = destinationMarker.getLatLng().lat, lng = destinationMarker.getLatLng().lng
+                setDestination(lat.toFixed(2) + "," + lng.toFixed(3))
+                routingControl.setWaypoints(waypoints);
+            });
         }
     }
 
@@ -92,7 +142,14 @@ const Map = () => {
         <div className="map-container">
             <div id="mymap" style={{ width: '100%', height: '650px', position: 'absolute' }}></div>
             <div className="filter-container">
-                <Filters setSrc={setSrc} setDest={setDest} handleRoute={handleRoute} />
+                <Filters
+                    source={source}
+                    destination={destination}
+                    setSource={setSource}
+                    setDestination={setDestination}
+                    setSrc={setSrc}
+                    setDest={setDest}
+                    handleRoute={handleRoute} />
             </div>
         </div>
     );

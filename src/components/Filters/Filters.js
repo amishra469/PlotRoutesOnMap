@@ -3,9 +3,7 @@ import sourceIcon from "../../assets/Source.png"
 import destinationIcon from "../../assets/Destination.png"
 import "./Filters.css"
 
-const Filters = ({setSrc, setDest, handleRoute}) => {
-    const [source, setSource] = useState("")
-    const [destination, setDestination] = useState("")
+const Filters = ({source, destination, setSource, setDestination, setSrc, setDest, handleRoute}) => {
     const [isSource, setIsSource] = useState(false)
     const [isDestination, setIsDestination] = useState(false)
 
@@ -41,7 +39,7 @@ const Filters = ({setSrc, setDest, handleRoute}) => {
                     </span>
                 </div>
             </div>
-            <button type='submit' onClick={()=> {handleRoute()}}>Get The Route</button>
+            <button type='submit' onClick={()=> {handleRoute(source, destination)}}>Get The Route</button>
         </div >
     )
 }
