@@ -3,6 +3,7 @@ import Filters from '../Filters/Filters';
 import './Map.css';
 import sourceIcon from '../../assets/Source.png';
 import destinationIcon from '../../assets/Destination.png';
+import { isValidLatitude, isValidLongitude } from './MapHelper';
 
 const L = window.L = window.L ? window.L : {};
 let map = null;
@@ -70,7 +71,10 @@ const Map = () => {
         setSource(src);
         if (src !== '') {
             const [lat, lng] = src.split(',');
-            plotMarker('source', [lat, lng]);
+            if (isValidLatitude(lat) && isValidLongitude(lng))
+                plotMarker('source', [lat, lng]);
+            else
+                alert("Please insert valid lattitude and longitude")
         }
     };
 
@@ -78,14 +82,29 @@ const Map = () => {
         setDestination(dest);
         if (dest !== '') {
             const [lat, lng] = dest.split(',');
-            plotMarker('destination', [lat, lng]);
+            if (isValidLatitude(lat) && isValidLongitude(lng))
+                plotMarker('destination', [lat, lng]);
+            else
+                alert("Please insert valid lattitude and longitude")
+
         }
     };
 
-    const handleRoute = (src, dest) => {
-        if (src !== '' && dest !== '') {
-            let [sLat, sLng] = src.split(",");
-            let [dLat, dLng] = dest.split(",")
+    const handleRoute = () => {
+        if (source !== '' && destination !== '') {
+            let [sLat, sLng] = source.split(",");
+            let [dLat, dLng] = destination.split(",")
+
+            debugger;
+            if (!isValidLatitude(sLat) || !isValidLongitude(sLng)) {
+                alert("Please insert valid lattitude and longitude");
+                return;
+            }
+
+            if (!isValidLatitude(dLat) || !isValidLongitude(dLng)) {
+                alert("Please insert valid lattitude and longitude");
+                return;
+            }
 
             if (routingControl) {
                 map.removeControl(routingControl);
